@@ -5,383 +5,309 @@ var tabla_ventas;
 var tabla_ventas_mes;
 
 //Función que se ejecuta al inicio
-function init(){
-	
-	listar();
-
-	
+function init() {
+  listar();
 }
-
 
 //Función Listar
-function listar()
-{
-	tabla=$('#ventas_data').dataTable(
-	{
-		"aProcessing": true,//Activamos el procesamiento del datatables
-	    "aServerSide": true,//Paginación y filtrado realizados por el servidor
-	    dom: 'Bfrtip',//Definimos los elementos del control de tabla
-	    buttons: [		          
-	
-		          
-		        ],
-		"ajax":
-				{
-					url: '../ajax/ventas.php?op=buscar_ventas',
-					type : "get",
-					dataType : "json",						
-					error: function(e){
-						console.log(e.responseText);	
-					}
-				},
-		"bDestroy": true,
-		"responsive": true,
-		"bInfo":true,
-		"iDisplayLength": 10,//Por cada 10 registros hace una paginación
-	    "order": [[ 0, "desc" ]],//Ordenar (columna,orden)
-	    
-	    "language": {
- 
-			    "sProcessing":     "Procesando...",
-			 
-			    "sLengthMenu":     "Mostrar _MENU_ registros",
-			 
-			    "sZeroRecords":    "No se encontraron resultados",
-			 
-			    "sEmptyTable":     "Ningún dato disponible en esta tabla",
-			 
-			    "sInfo":           "Mostrando un total de _TOTAL_ registros",
-			 
-			    "sInfoEmpty":      "Mostrando un total de 0 registros",
-			 
-			    "sInfoFiltered":   "(filtrado de un total de _MAX_ registros)",
-			 
-			    "sInfoPostFix":    "",
-			 
-			    "sSearch":         "Buscar:",
-			 
-			    "sUrl":            "",
-			 
-			    "sInfoThousands":  ",",
-			 
-			    "sLoadingRecords": "Cargando...",
-			 
-			    "oPaginate": {
-			 
-			        "sFirst":    "Primero",
-			 
-			        "sLast":     "Último",
-			 
-			        "sNext":     "Siguiente",
-			 
-			        "sPrevious": "Anterior"
-			 
-			    },
-			 
-			    "oAria": {
-			 
-			        "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
-			 
-			        "sSortDescending": ": Activar para ordenar la columna de manera descendente"
-			 
-			    }
+function listar() {
+  tabla = $("#ventas_data")
+    .dataTable({
+      aProcessing: true, //Activamos el procesamiento del datatables
+      aServerSide: true, //Paginación y filtrado realizados por el servidor
+      dom: "Bfrtip", //Definimos los elementos del control de tabla
+      buttons: [],
+      ajax: {
+        url: "../ajax/ventas.php?op=buscar_ventas",
+        type: "get",
+        dataType: "json",
+        error: function (e) {
+          console.log(e.responseText);
+        },
+      },
+      bDestroy: true,
+      responsive: true,
+      bInfo: true,
+      iDisplayLength: 10, //Por cada 10 registros hace una paginación
+      order: [[0, "desc"]], //Ordenar (columna,orden)
 
-			   }//cerrando language
-	       
-	}).DataTable();
+      language: {
+        sProcessing: "Procesando...",
+
+        sLengthMenu: "Mostrar _MENU_ registros",
+
+        sZeroRecords: "No se encontraron resultados",
+
+        sEmptyTable: "Ningún dato disponible en esta tabla",
+
+        sInfo: "Mostrando un total de _TOTAL_ registros",
+
+        sInfoEmpty: "Mostrando un total de 0 registros",
+
+        sInfoFiltered: "(filtrado de un total de _MAX_ registros)",
+
+        sInfoPostFix: "",
+
+        sSearch: "Buscar:",
+
+        sUrl: "",
+
+        sInfoThousands: ",",
+
+        sLoadingRecords: "Cargando...",
+
+        oPaginate: {
+          sFirst: "Primero",
+
+          sLast: "Último",
+
+          sNext: "Siguiente",
+
+          sPrevious: "Anterior",
+        },
+
+        oAria: {
+          sSortAscending:
+            ": Activar para ordenar la columna de manera ascendente",
+
+          sSortDescending:
+            ": Activar para ordenar la columna de manera descendente",
+        },
+      }, //cerrando language
+    })
+    .DataTable();
 }
 
+//VER DETALLE CLIENTE-VENTA
+$(document).on("click", ".detalle", function () {
+  //toma el valor del id
+  var numero_venta = $(this).attr("id");
 
-	  //VER DETALLE CLIENTE-VENTA
-	 $(document).on('click', '.detalle', function(){
-	 	//toma el valor del id
-		var numero_venta = $(this).attr("id");
+  $.ajax({
+    url: "../ajax/ventas.php?op=ver_detalle_cliente_venta",
+    method: "POST",
+    data: { numero_venta: numero_venta },
+    cache: false,
+    dataType: "json",
+    success: function (data) {
+      $("#cliente").html(data.cliente);
+      $("#numero_venta").html(data.numero_venta);
+      $("#dni_cliente").html(data.dni_cliente);
+      $("#direccion").html(data.direccion);
+      $("#fecha_venta").html(data.fecha_venta);
+    },
+  });
+});
 
-		$.ajax({
-			url:"../ajax/ventas.php?op=ver_detalle_cliente_venta",
-			method:"POST",
-			data:{numero_venta:numero_venta},
-			cache:false,
-			dataType:"json",
-			success:function(data)
-			{
-				
-				$("#cliente").html(data.cliente);
-				$("#numero_venta").html(data.numero_venta);
-				$("#dni_cliente").html(data.dni_cliente);
-				$("#direccion").html(data.direccion);
-				$("#fecha_venta").html(data.fecha_venta);
-                
-				
-			}
-		})
-	});
+//VER DETALLE VENTA
+$(document).on("click", ".detalle", function () {
+  //toma el valor del id
+  var numero_venta = $(this).attr("id");
 
-	  //VER DETALLE VENTA
-	 $(document).on('click', '.detalle', function(){
-	 	//toma el valor del id
-		var numero_venta = $(this).attr("id");
+  $.ajax({
+    url: "../ajax/ventas.php?op=ver_detalle_venta",
+    method: "POST",
+    data: { numero_venta: numero_venta },
+    cache: false,
+    //dataType:"json",
+    success: function (data) {
+      $("#detalles").html(data);
+    },
+  });
+});
 
-		$.ajax({
-			url:"../ajax/ventas.php?op=ver_detalle_venta",
-			method:"POST",
-			data:{numero_venta:numero_venta},
-			cache:false,
-			//dataType:"json",
-			success:function(data)
-			{
-				
-				$("#detalles").html(data);
-                 
-			}
-		})
-	});
-     
+//CAMBIAR ESTADO DE LA VENTA
 
-     //CAMBIAR ESTADO DE LA VENTA
+function cambiarEstado(id_ventas, numero_venta, est) {
+  //alert(numero_compra);
 
-   
-    function cambiarEstado(id_ventas, numero_venta, est){
-    
+  bootbox.confirm(
+    "¿Estas seguro que quieres cambiar el estado de esta venta?",
+    function (result) {
+      if (result) {
+        $.ajax({
+          url: "../ajax/ventas.php?op=cambiar_estado_venta",
+          method: "POST",
+          //toma el valor del id y del estado
+          data: { id_ventas: id_ventas, numero_venta: numero_venta, est: est },
+          cache: false,
 
-    //alert(numero_compra);
-    	
+          success: function (data) {
+            $("#ventas_data").DataTable().ajax.reload();
+            //refresca el datatable de ventas por fecha
+            $("#ventas_fecha_data").DataTable().ajax.reload();
+            //refresca el datatable de ventas por fecha - mes
+            $("#ventas_fecha_mes_data").DataTable().ajax.reload();
+          },
+        });
+      }
+    }
+  ); //bootbox
+}
 
-	bootbox.confirm("¿Estas seguro que quieres cambiar el estado de esta venta?", function(result){
-		if(result)
-		{
+//CONSULTA VENTAS-FECHA
+$(document).on("click", "#btn_venta_fecha", function () {
+  var fecha_inicial = $("#datepicker").val();
+  var fecha_final = $("#datepicker2").val();
 
+  //validamos si existe las fechas entonces se ejecuta el ajax
 
-			$.ajax({
-				url:"../ajax/ventas.php?op=cambiar_estado_venta",
-				method:"POST",
-				//toma el valor del id y del estado
-				data:{id_ventas:id_ventas,numero_venta:numero_venta, est:est},
-				cache: false,
-				
-				success:function(data){
-	            $('#ventas_data').DataTable().ajax.reload();
-                  //refresca el datatable de ventas por fecha
-                 $('#ventas_fecha_data').DataTable().ajax.reload();
-                 //refresca el datatable de ventas por fecha - mes
-                 $('#ventas_fecha_mes_data').DataTable().ajax.reload();
-                 
+  if (fecha_inicial != "" && fecha_final != "") {
+    // BUSCA LAS COMPRAS POR FECHA
+    tabla_ventas = $("#ventas_fecha_data").DataTable({
+      aProcessing: true, //Activamos el procesamiento del datatables
+      aServerSide: true, //Paginación y filtrado realizados por el servidor
+      dom: "Bfrtip", //Definimos los elementos del control de tabla
+      buttons: [],
 
-				}
+      ajax: {
+        url: "../ajax/ventas.php?op=buscar_ventas_fecha",
+        type: "post",
 
-			});
+        data: { fecha_inicial: fecha_inicial, fecha_final: fecha_final },
+        error: function (e) {
+          console.log(e.responseText);
+        },
+      },
 
-		   } 
+      bDestroy: true,
+      responsive: true,
+      bInfo: true,
+      iDisplayLength: 10, //Por cada 10 registros hace una paginación
+      order: [[0, "desc"]], //Ordenar (columna,orden)
 
-	  });//bootbox
+      language: {
+        sProcessing: "Procesando...",
 
+        sLengthMenu: "Mostrar _MENU_ registros",
 
-	  }
+        sZeroRecords: "No se encontraron resultados",
 
-	   //CONSULTA VENTAS-FECHA
-           $(document).on("click","#btn_venta_fecha", function(){
+        sEmptyTable: "Ningún dato disponible en esta tabla",
 
+        sInfo:
+          "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
 
-           	var fecha_inicial= $("#datepicker").val();
-           	var fecha_final= $("#datepicker2").val();
+        sInfoEmpty: "Mostrando registros del 0 al 0 de un total de 0 registros",
 
-        //validamos si existe las fechas entonces se ejecuta el ajax
+        sInfoFiltered: "(filtrado de un total de _MAX_ registros)",
 
-        if(fecha_inicial!="" && fecha_final!=""){
+        sInfoPostFix: "",
 
-	       // BUSCA LAS COMPRAS POR FECHA
-	      tabla_ventas= $('#ventas_fecha_data').DataTable({
+        sSearch: "Buscar:",
 
-	    
-	       "aProcessing": true,//Activamos el procesamiento del datatables
-	       "aServerSide": true,//Paginación y filtrado realizados por el servidor
-	      dom: 'Bfrtip',//Definimos los elementos del control de tabla
-	      buttons: [		          
-		   
-		            
-		        ],
+        sUrl: "",
 
-	         "ajax":{
-	            url:"../ajax/ventas.php?op=buscar_ventas_fecha",
-                type : "post",
-			
-				data:{fecha_inicial:fecha_inicial,fecha_final:fecha_final},						
-				error: function(e){
-					console.log(e.responseText);
+        sInfoThousands: ",",
 
-				},
+        sLoadingRecords: "Cargando...",
 
-	          
-	          },
+        oPaginate: {
+          sFirst: "Primero",
 
-	            "bDestroy": true,
-				"responsive": true,
-				"bInfo":true,
-				"iDisplayLength": 10,//Por cada 10 registros hace una paginación
-			    "order": [[ 0, "desc" ]],//Ordenar (columna,orden)
+          sLast: "Último",
 
-	          "language": {
- 
-			    "sProcessing":     "Procesando...",
-			 
-			    "sLengthMenu":     "Mostrar _MENU_ registros",
-			 
-			    "sZeroRecords":    "No se encontraron resultados",
-			 
-			    "sEmptyTable":     "Ningún dato disponible en esta tabla",
-			 
-			    "sInfo":           "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
-			 
-			    "sInfoEmpty":      "Mostrando registros del 0 al 0 de un total de 0 registros",
-			 
-			    "sInfoFiltered":   "(filtrado de un total de _MAX_ registros)",
-			 
-			    "sInfoPostFix":    "",
-			 
-			    "sSearch":         "Buscar:",
-			 
-			    "sUrl":            "",
-			 
-			    "sInfoThousands":  ",",
-			 
-			    "sLoadingRecords": "Cargando...",
-			 
-			    "oPaginate": {
-			 
-			        "sFirst":    "Primero",
-			 
-			        "sLast":     "Último",
-			 
-			        "sNext":     "Siguiente",
-			 
-			        "sPrevious": "Anterior"
-			 
-			    },
-			 
-			    "oAria": {
-			 
-			        "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
-			 
-			        "sSortDescending": ": Activar para ordenar la columna de manera descendente"
-			 
-			    }
+          sNext: "Siguiente",
 
-			   }, //cerrando language
+          sPrevious: "Anterior",
+        },
 
-			    //"scrollX": true
+        oAria: {
+          sSortAscending:
+            ": Activar para ordenar la columna de manera ascendente",
 
+          sSortDescending:
+            ": Activar para ordenar la columna de manera descendente",
+        },
+      }, //cerrando language
 
+      //"scrollX": true
+    });
+  } //cerrando condicional de las fechas
+});
 
-	      });
+//****************************************************************
 
-	        }//cerrando condicional de las fechas
+//FECHA VENTA POR MES
 
-	    });
+$(document).on("click", "#btn_venta_fecha_mes", function () {
+  var mes = $("#mes").val();
+  var ano = $("#ano").val();
 
-      //****************************************************************
+  //validamos si existe las fechas entonces se ejecuta el ajax
 
-      
-         //FECHA VENTA POR MES
+  if (mes != "" && ano != "") {
+    // BUSCA LAS COMPRAS POR FECHA
+    var tabla_ventas_mes = $("#ventas_fecha_mes_data").DataTable({
+      aProcessing: true, //Activamos el procesamiento del datatables
+      aServerSide: true, //Paginación y filtrado realizados por el servidor
+      dom: "Bfrtip", //Definimos los elementos del control de tabla
+      buttons: [],
 
-        $(document).on("click","#btn_venta_fecha_mes", function(){
+      ajax: {
+        url: "../ajax/ventas.php?op=buscar_ventas_fecha_mes",
+        type: "post",
 
-        
+        data: { mes: mes, ano: ano },
+        error: function (e) {
+          console.log(e.responseText);
+        },
+      },
 
-           	var mes= $("#mes").val();
-           	var ano= $("#ano").val();
+      bDestroy: true,
+      responsive: true,
+      bInfo: true,
+      iDisplayLength: 10, //Por cada 10 registros hace una paginación
+      order: [[0, "desc"]], //Ordenar (columna,orden)
 
-        //validamos si existe las fechas entonces se ejecuta el ajax
- 
-          if(mes!="" && ano!=""){
+      language: {
+        sProcessing: "Procesando...",
 
-	       // BUSCA LAS COMPRAS POR FECHA
-	      var tabla_ventas_mes= $('#ventas_fecha_mes_data').DataTable({
-	        
-	       "aProcessing": true,//Activamos el procesamiento del datatables
-	       "aServerSide": true,//Paginación y filtrado realizados por el servidor
-	      dom: 'Bfrtip',//Definimos los elementos del control de tabla
-	      buttons: [		          
-		          
-		           
-		        ],
+        sLengthMenu: "Mostrar _MENU_ registros",
 
-	         "ajax":{
-	            url:"../ajax/ventas.php?op=buscar_ventas_fecha_mes",
-                type : "post",
-				
-				data:{mes:mes,ano:ano},						
-				error: function(e){
-					console.log(e.responseText);
+        sZeroRecords: "No se encontraron resultados",
 
-				},
+        sEmptyTable: "Ningún dato disponible en esta tabla",
 
-	          
-	          },
+        sInfo:
+          "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
 
-	            "bDestroy": true,
-				"responsive": true,
-				"bInfo":true,
-				"iDisplayLength": 10,//Por cada 10 registros hace una paginación
-			    "order": [[ 0, "desc" ]],//Ordenar (columna,orden)
+        sInfoEmpty: "Mostrando registros del 0 al 0 de un total de 0 registros",
 
-	          "language": {
- 
-			    "sProcessing":     "Procesando...",
-			 
-			    "sLengthMenu":     "Mostrar _MENU_ registros",
-			 
-			    "sZeroRecords":    "No se encontraron resultados",
-			 
-			    "sEmptyTable":     "Ningún dato disponible en esta tabla",
-			 
-			    "sInfo":           "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
-			 
-			    "sInfoEmpty":      "Mostrando registros del 0 al 0 de un total de 0 registros",
-			 
-			    "sInfoFiltered":   "(filtrado de un total de _MAX_ registros)",
-			 
-			    "sInfoPostFix":    "",
-			 
-			    "sSearch":         "Buscar:",
-			 
-			    "sUrl":            "",
-			 
-			    "sInfoThousands":  ",",
-			 
-			    "sLoadingRecords": "Cargando...",
-			 
-			    "oPaginate": {
-			 
-			        "sFirst":    "Primero",
-			 
-			        "sLast":     "Último",
-			 
-			        "sNext":     "Siguiente",
-			 
-			        "sPrevious": "Anterior"
-			 
-			    },
-			 
-			    "oAria": {
-			 
-			        "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
-			 
-			        "sSortDescending": ": Activar para ordenar la columna de manera descendente"
-			 
-			    }
+        sInfoFiltered: "(filtrado de un total de _MAX_ registros)",
 
-			   }, //cerrando language
+        sInfoPostFix: "",
 
-			    //"scrollX": true
+        sSearch: "Buscar:",
 
+        sUrl: "",
 
+        sInfoThousands: ",",
 
-	      });
+        sLoadingRecords: "Cargando...",
 
-	        }//cerrando condicional de las fechas
+        oPaginate: {
+          sFirst: "Primero",
 
-	    });
+          sLast: "Último",
 
+          sNext: "Siguiente",
 
+          sPrevious: "Anterior",
+        },
+
+        oAria: {
+          sSortAscending:
+            ": Activar para ordenar la columna de manera ascendente",
+
+          sSortDescending:
+            ": Activar para ordenar la columna de manera descendente",
+        },
+      }, //cerrando language
+
+      //"scrollX": true
+    });
+  } //cerrando condicional de las fechas
+});
 
 init();
