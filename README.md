@@ -6,6 +6,7 @@ Pagina para una polleria tambien contando con productos de minimercado, esta rea
 
 
 Cuenta con las siguientes secciones:
+
 (imagenes generales, cada modulo posee sus pantallas de cargas, detalles, etc.)
 ## LOGIN:
 ![imagen de login ](https://github.com/Belen-Sosa/sistemaGestion/blob/main/img-git/login.PNG)
